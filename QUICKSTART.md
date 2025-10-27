@@ -16,7 +16,7 @@ Get started with ZCS to ZCS migration in just a few steps.
 ### 1. Clone and Configure
 
 ```bash
-# Clone the repository
+# Clone the repository (or download the release)
 git clone https://github.com/ScaleNix/zcs-to-zcs-migration.git
 cd zcs-to-zcs-migration
 

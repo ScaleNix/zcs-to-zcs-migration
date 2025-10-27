@@ -15,6 +15,7 @@ echo ""
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m'
 
 print_step() {
@@ -29,10 +30,22 @@ print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $*"
 }
 
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $*"
+}
+
 # Step 1: Configuration check
 print_step "Step 1: Configuration Check"
 if [[ ! -f "migration.conf" ]]; then
     print_warning "Configuration file not found!"
+    
+    # Check if example file exists
+    if [[ ! -f "migration.conf.example" ]]; then
+        print_error "migration.conf.example not found!"
+        echo "Please ensure you're running this script from the correct directory."
+        exit 1
+    fi
+    
     echo "Creating from example..."
     cp migration.conf.example migration.conf
     echo ""
@@ -53,6 +66,13 @@ read -p "Press Enter to continue to pre-flight checks..."
 # Step 2: Pre-flight checks
 print_step "Step 2: Running Pre-flight Checks"
 echo ""
+
+# Check if script exists and is executable
+if [[ ! -x "./preflight-check.sh" ]]; then
+    print_error "preflight-check.sh not found or not executable"
+    exit 1
+fi
+
 ./preflight-check.sh
 
 if [[ $? -ne 0 ]]; then
@@ -77,6 +97,12 @@ read -p "Continue with export? (y/n): " answer
 if [[ "$answer" != "y" ]]; then
     echo "Export cancelled."
     exit 0
+fi
+
+# Check if script exists and is executable
+if [[ ! -x "./migrate.sh" ]]; then
+    print_error "migrate.sh not found or not executable"
+    exit 1
 fi
 
 ./migrate.sh --export-only
@@ -120,6 +146,12 @@ read -p "Press Enter to verify migration..."
 # Step 5: Verification
 print_step "Step 5: Verifying Migration"
 echo ""
+
+# Check if script exists and is executable
+if [[ ! -x "./post-migration-verify.sh" ]]; then
+    print_error "post-migration-verify.sh not found or not executable"
+    exit 1
+fi
 
 ./post-migration-verify.sh
 
