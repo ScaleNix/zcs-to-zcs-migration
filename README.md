@@ -26,18 +26,43 @@ The tool follows a modular object-oriented design with the following components:
 - `ldap_handler.py` - LDAP query and account loading
 - `utils.py` - Utilities for CSV loading, date validation, and statistics
 
-## 🚀 Installation
+## Requirements
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+- Python 3.7+
+- Zimbra Collaboration Suite (source and destination)
+- LDAP access to Zimbra directory
+- SSH access to Zimbra servers (for some operations)
+- Administrative credentials for both source and destination servers
 
-2. **Configure the tool:**
-   Edit `config.ini` with your Zimbra server details.
+### Python Dependencies
 
-3. **Prepare store mapping:**
-   Create `zimbra_mail_hosts.csv` with email-to-host mappings.
+```bash
+pip install -r requirements.txt
+```
+
+Required packages:
+- `python-ldap>=3.4.0`
+- `configobj>=5.0.8`
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd zcs-to-zcs-migration
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Create configuration file:
+```bash
+cp config.ini.example config.ini
+```
+
+4. Edit `config.ini` with your environment details (see Configuration section below)
 
 ## 📝 Configuration
 
