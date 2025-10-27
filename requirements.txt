@@ -1,0 +1,12 @@
+# Core dependencies
+python-ldap>=3.4.0
+configobj>=5.0.8
+
+# Python 3 standard library (no installation needed)
+# - subprocess
+# - threading
+# - pathlib
+# - argparse
+# - logging
+# - csv
+# - datetime
