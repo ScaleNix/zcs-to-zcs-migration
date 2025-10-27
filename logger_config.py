@@ -1,4 +1,4 @@
-"""Logging configuration for Zimbra migration."""
+"""Logging configuration for Zimbra migration."
 
 import logging
 from logging.handlers import RotatingFileHandler
