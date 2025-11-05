@@ -1,0 +1,36 @@
+# Zimbra Migration Tool - Configuration File
+# Copy this file to config.ini and update with your environment details
+
+[zimbra_source]
+# Source Zimbra server configuration
+host = source.zimbra.com
+admin_user = admin
+admin_password = your_admin_password_here
+
+# Source LDAP configuration
+ldap_protocol = ldap://
+ldap_host = ldap.source.com
+ldap_port = 389
+ldap_user = cn=zimbra,cn=admins,cn=zimbra
+ldap_pass = your_ldap_password_here
+ldap_base_dn = ou=people,dc=zimbra,dc=com
+ldap_filter = (objectClass=zimbraAccount)
+
+[zimbra_destination]
+# Destination Zimbra server configuration
+host = destination.zimbra.com
+admin_user = admin
+admin_password = your_admin_password_here
+
+# Destination LDAP configuration
+ldap_host = ldap.destination.com
+ldap_port = 389
+ldap_user = cn=zimbra,cn=admins,cn=zimbra
+ldap_pass = your_ldap_password_here
+ldap_filter = (objectClass=zimbraAccount)
+
+[global]
+# Global migration settings
+root_folder = /opt/zimbra/backup/
+session_file = sessions.txt
+log_level = INFO

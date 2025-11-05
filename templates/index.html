@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zimbra Migration Tool - Web UI</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-envelope-arrow-up"></i> Zimbra Migration Tool
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link" id="connection-status">
+                            <i class="bi bi-circle-fill text-success"></i> Connected
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5><i class="bi bi-list-ul"></i> Navigation</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action active" data-section="configuration">
+                            <i class="bi bi-gear"></i> Configuration
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="accounts">
+                            <i class="bi bi-people"></i> Load Accounts
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="migration">
+                            <i class="bi bi-arrow-repeat"></i> Migration
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="monitoring">
+                            <i class="bi bi-graph-up"></i> Monitoring
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="logs">
+                            <i class="bi bi-file-text"></i> Logs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h6><i class="bi bi-speedometer2"></i> Quick Stats</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="stat-item">
+                            <span class="stat-label">Loaded Accounts:</span>
+                            <span class="stat-value" id="stat-accounts">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Status:</span>
+                            <span class="stat-value" id="stat-status">Idle</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Progress:</span>
+                            <span class="stat-value" id="stat-progress">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <!-- Configuration Section -->
+                <div id="section-configuration" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="bi bi-gear"></i> Server Configuration</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#source-config">
+                                        Source Server
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dest-config">
+                                        Destination Server
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#global-config">
+                                        Global Settings
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content mt-3">
+                                <!-- Source Server Config -->
+                                <div class="tab-pane fade show active" id="source-config">
+                                    <form id="source-config-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Host</label>
+                                                    <input type="text" class="form-control" name="host" placeholder="source.zimbra.com">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Admin User</label>
+                                                    <input type="text" class="form-control" name="admin_user" placeholder="admin">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Admin Password</label>
+                                                    <input type="password" class="form-control" name="admin_password">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Host</label>
+                                                    <input type="text" class="form-control" name="ldap_host" placeholder="ldap.source.com">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Port</label>
+                                                    <input type="number" class="form-control" name="ldap_port" value="389">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Protocol</label>
+                                                    <select class="form-select" name="ldap_protocol">
+                                                        <option value="ldap://">ldap://</option>
+                                                        <option value="ldaps://">ldaps://</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP User</label>
+                                                    <input type="text" class="form-control" name="ldap_user" placeholder="cn=zimbra,cn=admins,cn=zimbra">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Password</label>
+                                                    <input type="password" class="form-control" name="ldap_pass">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Base DN</label>
+                                                    <input type="text" class="form-control" name="ldap_base_dn" placeholder="ou=people,dc=zimbra,dc=com">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">LDAP Filter</label>
+                                            <input type="text" class="form-control" name="ldap_filter" placeholder="(objectClass=zimbraAccount)">
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="validateConnection('source')">
+                                            <i class="bi bi-check-circle"></i> Validate Connection
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Destination Server Config -->
+                                <div class="tab-pane fade" id="dest-config">
+                                    <form id="dest-config-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Host</label>
+                                                    <input type="text" class="form-control" name="host" placeholder="destination.zimbra.com">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Admin User</label>
+                                                    <input type="text" class="form-control" name="admin_user" placeholder="admin">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Admin Password</label>
+                                                    <input type="password" class="form-control" name="admin_password">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Host</label>
+                                                    <input type="text" class="form-control" name="ldap_host" placeholder="ldap.destination.com">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP Port</label>
+                                                    <input type="number" class="form-control" name="ldap_port" value="389">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">LDAP User</label>
+                                                    <input type="text" class="form-control" name="ldap_user" placeholder="cn=zimbra,cn=admins,cn=zimbra">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">LDAP Password</label>
+                                            <input type="password" class="form-control" name="ldap_pass">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">LDAP Filter</label>
+                                            <input type="text" class="form-control" name="ldap_filter" placeholder="(objectClass=zimbraAccount)">
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="validateConnection('destination')">
+                                            <i class="bi bi-check-circle"></i> Validate Connection
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Global Settings -->
+                                <div class="tab-pane fade" id="global-config">
+                                    <form id="global-config-form">
+                                        <div class="mb-3">
+                                            <label class="form-label">Root Backup Folder</label>
+                                            <input type="text" class="form-control" name="root_folder" value="/opt/zimbra/backup/">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Session File</label>
+                                            <input type="text" class="form-control" name="session_file" value="sessions.txt">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Log Level</label>
+                                            <select class="form-select" name="log_level">
+                                                <option value="DEBUG">DEBUG</option>
+                                                <option value="INFO" selected>INFO</option>
+                                                <option value="WARNING">WARNING</option>
+                                                <option value="ERROR">ERROR</option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-success" onclick="saveConfiguration()">
+                                    <i class="bi bi-save"></i> Save Configuration
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="loadConfiguration()">
+                                    <i class="bi bi-arrow-clockwise"></i> Load from File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accounts Section -->
+                <div id="section-accounts" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="bi bi-people"></i> Load Accounts</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-pills mb-3" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#ldap-accounts">
+                                        <i class="bi bi-server"></i> From LDAP
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#csv-accounts">
+                                        <i class="bi bi-file-earmark-spreadsheet"></i> From CSV
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <!-- LDAP Accounts -->
+                                <div class="tab-pane fade show active" id="ldap-accounts">
+                                    <div class="mb-3">
+                                        <label class="form-label">LDAP Filter (optional, uses config if empty)</label>
+                                        <input type="text" class="form-control" id="ldap-filter" placeholder="(objectClass=zimbraAccount)">
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="loadAccountsFromLDAP()">
+                                        <i class="bi bi-cloud-download"></i> Load Accounts from LDAP
+                                    </button>
+                                </div>
+
+                                <!-- CSV Accounts -->
+                                <div class="tab-pane fade" id="csv-accounts">
+                                    <div class="mb-3">
+                                        <label class="form-label">CSV File Path</label>
+                                        <input type="text" class="form-control" id="csv-path" placeholder="/path/to/accounts.csv">
+                                        <div class="form-text">
+                                            CSV format: email,mailstore_host (one per line)
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="loadAccountsFromCSV()">
+                                        <i class="bi bi-file-arrow-up"></i> Load Accounts from CSV
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Accounts Table -->
+                            <div class="mt-4" id="accounts-container" style="display: none;">
+                                <h5>Loaded Accounts (<span id="accounts-count">0</span>)</h5>
+                                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                    <table class="table table-striped table-hover">
+                                        <thead class="table-dark sticky-top">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Email</th>
+                                                <th>Backup Folder</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="accounts-table-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Migration Section -->
+                <div id="section-migration" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="bi bi-arrow-repeat"></i> Migration Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Migration Types</h5>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="full-migration">
+                                        <label class="form-check-label" for="full-migration">
+                                            <strong>Full Migration</strong>
+                                            <div class="text-muted small">Complete account data migration</div>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="incremental-migration">
+                                        <label class="form-check-label" for="incremental-migration">
+                                            <strong>Incremental Migration</strong>
+                                            <div class="text-muted small">Migrate only changes since a date</div>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="ldiff-migration">
+                                        <label class="form-check-label" for="ldiff-migration">
+                                            <strong>LDIFF Migration</strong>
+                                            <div class="text-muted small">Export and import LDAP data</div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h5>Migration Parameters</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Number of Threads</label>
+                                        <input type="number" class="form-control" id="migration-threads" value="4" min="1" max="10">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Destination Store Index</label>
+                                        <input type="number" class="form-control" id="store-index" value="0" min="0">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary mt-1" onclick="listStores()">
+                                            <i class="bi bi-list"></i> List Available Stores
+                                        </button>
+                                    </div>
+                                    <div class="mb-3" id="incremental-date-container" style="display: none;">
+                                        <label class="form-label">Incremental Date (MM/DD/YYYY)</label>
+                                        <input type="text" class="form-control" id="incremental-date" placeholder="01/01/2024 or 'cron' for auto">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                <button type="button" class="btn btn-lg btn-success" onclick="startMigration()" id="start-migration-btn">
+                                    <i class="bi bi-play-fill"></i> Start Migration
+                                </button>
+                                <button type="button" class="btn btn-lg btn-danger" onclick="stopMigration()" id="stop-migration-btn" disabled>
+                                    <i class="bi bi-stop-fill"></i> Stop Migration
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Section -->
+                <div id="section-monitoring" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="bi bi-graph-up"></i> Migration Progress</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Status Badge -->
+                            <div class="mb-3">
+                                <h5>Status: <span class="badge bg-secondary" id="migration-status-badge">Idle</span></h5>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="mb-4">
+                                <label class="form-label">Overall Progress</label>
+                                <div class="progress" style="height: 30px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                         id="migration-progress-bar"
+                                         role="progressbar"
+                                         style="width: 0%">0%</div>
+                                </div>
+                                <div class="mt-2">
+                                    <span id="accounts-processed">0</span> / <span id="accounts-total">0</span> accounts processed
+                                </div>
+                            </div>
+
+                            <!-- Current Account -->
+                            <div class="mb-3" id="current-account-container" style="display: none;">
+                                <label class="form-label">Currently Processing:</label>
+                                <div class="alert alert-info" id="current-account">
+                                    <i class="bi bi-arrow-right-circle"></i> <span id="current-account-email">-</span>
+                                </div>
+                            </div>
+
+                            <!-- Statistics -->
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-primary" id="stat-full-migrated">0</h3>
+                                            <p class="mb-0">Full Migrations</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-success" id="stat-incr-migrated">0</h3>
+                                            <p class="mb-0">Incremental Migrations</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h3 class="text-info" id="stat-ldiff-migrated">0</h3>
+                                            <p class="mb-0">LDIFF Migrations</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Errors -->
+                            <div class="mt-4" id="errors-container" style="display: none;">
+                                <h5 class="text-danger"><i class="bi bi-exclamation-triangle"></i> Errors</h5>
+                                <div class="alert alert-danger" id="errors-list">
+                                </div>
+                            </div>
+
+                            <!-- Timing -->
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Start Time:</strong> <span id="migration-start-time">-</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>End Time:</strong> <span id="migration-end-time">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs Section -->
+                <div id="section-logs" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4><i class="bi bi-file-text"></i> Live Logs</h4>
+                            <button type="button" class="btn btn-sm btn-outline-light" onclick="clearLogs()">
+                                <i class="bi bi-trash"></i> Clear
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="logs-container" style="background-color: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 5px; max-height: 600px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 13px;">
+                                <div id="logs-content">
+                                    Waiting for log messages...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

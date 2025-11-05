@@ -2,6 +2,12 @@
 python-ldap>=3.4.0
 configobj>=5.0.8
 
+# Web UI dependencies
+flask>=2.3.0
+flask-socketio>=5.3.0
+python-socketio>=5.9.0
+eventlet>=0.33.0
+
 # Python 3 standard library (no installation needed)
 # - subprocess
 # - threading
